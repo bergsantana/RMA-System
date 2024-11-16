@@ -17,8 +17,8 @@ def verify_password(plain_password, hashed_password):
 def get_password_hash(password):
     return pwd_context.hash(password)
 
-def authenticate_user(db: Session, username: str, password: str):
-    user = db.query(User).filter(User.username == username).first()
+def authenticate_user(db: Session, email: str, password: str):
+    user = db.query(User).filter(User.email == email).first()
     if user and verify_password(password, user.hashed_password):
         return user
     return False
@@ -28,3 +28,4 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
