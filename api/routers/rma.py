@@ -8,8 +8,13 @@ from schemas import RMACreate, PeriodSearch
 from utils.utils import get_session_local
 from datetime import date
 from models.rma import RMA
+from fastapi.security import OAuth2PasswordBearer
+from auth.auth import validate_token
 
 router = APIRouter()
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/token")
+
 
 @router.post("/create-many/")
 def create_rmas(rmas: list[RMACreate], db: Session = Depends(get_session_local)):
@@ -61,7 +66,8 @@ def create_rmas(rmas: list[RMACreate], db: Session = Depends(get_session_local))
     return rmas
 
 @router.post("/create/")
-def create_rma(rma: RMACreate, db: Session = Depends(get_session_local)):
+def create_rma(rma: RMACreate, token: str = Depends(oauth2_scheme), db: Session = Depends(get_session_local)):
+    validate_token(token, db)
     try:
         db_rma = RMA(product_id=rma.product_id, reason=rma.reason, details=rma.details)
         db.add(db_rma)
@@ -78,11 +84,12 @@ def create_rma(rma: RMACreate, db: Session = Depends(get_session_local)):
         print("ERRO ao criar RMA")
     return "SUCESS"
 
+
 @router.post("/find-by-period")
-def find_by_period(period: PeriodSearch, db: Session = Depends(get_session_local) ):
+def find_by_period(period: PeriodSearch,  token: str = Depends(oauth2_scheme), db: Session = Depends(get_session_local) ):
+    validate_token(token, db)
     start_date = date.fromisoformat(period.start_date.replace('/', ''))
     end_date = date.fromisoformat(period.end_date.replace('/', ''))
-
 
     db_rma = db.query(RMASTEP).filter(RMASTEP.date.between(start_date, end_date)).all()
 
