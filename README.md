@@ -27,6 +27,8 @@
 `
 ## Demo do Dashboard
 ![image](https://github.com/user-attachments/assets/5f5e4b84-dcc2-48d7-b5bb-7e1224a7d0d9)
+![image](https://github.com/user-attachments/assets/48d76c1f-5846-4603-ae09-294283c741df)
+
 
 ![image](https://github.com/user-attachments/assets/eac1b3ef-4e6a-46c5-9563-7a580f23709f)
 
